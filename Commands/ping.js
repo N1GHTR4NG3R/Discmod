@@ -15,11 +15,12 @@ module.exports = {
 			// Define time periods
 			let ms = (bot.uptime / 1000);
 				const y = Math.floor(ms / 31449600).toString();
-				const mo = Math.floor(ms / 2620800).toString();
-				const w = Math.floor(ms / 604800).toString();
-				const d = Math.floor(ms / 86400).toString();
-				const h = Math.floor(ms / 3600).toString();
-				const m = Math.floor(ms / 60).toString();
+				const y = Math.floor((ms / 31449600) % 60).toString();
+				const mo = Math.floor((ms / 2620800) % 60).toString();
+				const w = Math.floor((ms / 604800) % 60).toString();
+				const d = Math.floor((ms / 86400) % 60).toString();
+				const h = Math.floor((ms / 3600) % 60).toString();
+				const m = Math.floor((ms / 60) % 60).toString();
 				const s = Math.floor(ms % 60).toString();
 				
 
