@@ -1,0 +1,16 @@
+# Ignore node_modules folder
+node_modules/
+
+#Ignore config files
+config.json
+
+# Ignore Package files
+package.json
+
+# Ignore some files from Data
+Data/bugs.txt
+Data/direction.txt
+
+#Ignore VS files
+.vs
+.vscode

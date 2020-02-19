@@ -1,0 +1,10 @@
+{
+    "roleName" : ["staff", "moderator", "mods", "admin", "community staff", "server staff"],
+    "email" : "create an email!",
+    "color" : {
+            "Alert" : "#b80909",
+            "Warning" : "#bd6f0f",
+            "Pass" : "#0cc90f",
+            "Cool" : "#0dc7d1"
+        }
+}
