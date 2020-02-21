@@ -10,7 +10,7 @@ When the bot joins your server, It will check for a staff area category with a c
 a staff area, but no modlogs channel it will create it, and if you don't have a staff area, It will also create that. It then checks
 for a moderation role that is pre-defined within the general.json file, If no match id found, It will create the role "Moderator" and
 assign basic permissions needed for a moderator, It then ties this role to the staff area category, which in turn, the modlogs channel
-is locked to the same permissions as the staff area. No input is needed from the user, other than inviting the bot.
+is locked to the same permissions as the staff area. No input is needed from the user, other than inviting the bot. At this point the bot will add the GuildID, GuildName, GuildMemberCOunt, GuildOwner and GuildOwnerID to the database. It also has guildPrefix here, for a webapp to be built later on to change this, and a few other features.
 
 # Member Join / leave logs 
 The bot will log when a member joins or leaves the guild, outputting their username, avatar and date/time they left, This can
@@ -23,13 +23,10 @@ or generally inflaming other community members and decides to edit their message
 repurcusions from guild staff.
 
 # Deleted Messages 
-Will log the deleted message and/or attachment URL (With direct upload Images, it attempts to link to the attachment, but fails,
- if deleted I have chosen not too pursue logging the direct upload attachments, in this way due to laws that I would not rather 
- not have backfire onto me, when I am trying to help make communities a safer place, It is possible, and feel free to amend the code
- as you see fit - But I accept no liability or responsibility for any legal repurcusions or damages, as I have not done so on my source).
+Will log the deleted message and/or attachment URL. Note: If an attachment is deleted, It outputs a URL that leads to Discords Databse, which will error with permission denied. I have chosen not to save these to a database for a multitude of reasons.
 
 # Voice Join / Leave logs 
-Will log when a user joins or leaves a voice channel, stating the user and the voice channel.
+Will log when a user joins or leaves a voice channel, stating the user and the voice channel joined.
 
 # Bot warning 
 If another bot joins the discord, It will output a warning log to notify staff, If staff have invited it, can ignore it,
@@ -37,9 +34,10 @@ Unfortunately selfBots can't be detected this way, so normal "Human" detection i
 
 # Database Interactivity 
 Currently logs guildID, guildName, owner, ownerID, memberCount and prefix (Prefix isn't used yet)...
+This will get updated as more functionality is used.
 
 # Kick/ Ban Log
-Outputs a log if a member is kicked
+Outputs a log if a member is kicked or banned using the bot, It is hit and miss to get this from the audit logs, so for better persistence, use the bot to log it.
 
 # Kick / SoftBan / Ban
 Have the option to kick, softban and ban members - Softban is where you ban and then immediatly unban them, which automatically deletes
