@@ -1,3 +1,6 @@
+# Code is invalid with recent v12.1.1 Discord.js update, currently working through it
+To get more information or for assistance, follow the progress join the discord at: https://discord.gg/pP4mVy3
+
 # Contender
  Discord Moderation Bot and multi-purpose gaming bot
 
