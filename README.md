@@ -25,25 +25,27 @@ voiceStateUpdate - The actions to take when a voice channel is entered left, cur
 
 Bot warning - If another bot joins the discord, It will output a warning log to notify staff, If staff have invited it, you can ignore it,Unfortunately selfBots can't be detected this way, so normal "Human" detection rates have to be applied, although I will be working on a way to hopefully keep self-bots out.
 
-### Database Interactivity 
+### Database Interactivity
+
 The bot is connected to a database to log information about guilds and members. The information it logs is as follows:
 
-###Guilds: 
-    * guild id
-    * guild name
-    * guild owner
-    * guild owner id
-    * guild member count
-    * guild prefix
-###Members:
-    * member id
-    * member name (The discord name you use)
-    * member discriminator (the number after your username i.e Nightranger#8080)
-    * guild id (to associate the member with the relevant guild)
-    * member chat points (For future updates to reward the most active chat members)
-    * member warn points (For future updates to introduce a warning system)
+Guilds: 
+* guild id
+* guild name
+* guild owner
+* guild owner id
+* guild member count
+* guild prefix
 
-###Current Bot commands are as follows:
+Members:
+* member id
+* member name (The discord name you use)
+* member discriminator (the number after your username i.e Nightranger#8080)
+* guild id (to associate the member with the relevant guild)
+* member chat points (For future updates to reward the most active chat members)
+* member warn points (For future updates to introduce a warning system)
+
+Current Bot commands are as follows:
 
 * kick - To kick a member from your guild
 * softban - To ban a user from your guild, then unban them immediately after to remove the chat history 
