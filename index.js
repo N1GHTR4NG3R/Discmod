@@ -36,9 +36,9 @@ fs.readdir('./Events/', (err, files) => {
 // activation to get the bot to work
 bot.on('ready', async () => {
     console.log('Contender is connected too:');
-    let guildData = console.table(bot.guilds.map((g) => ({ ID: g.id, Name: g.name})));
+    let guildData = console.table(bot.guilds.cache.map((g) => ({ ID: g.id, Name: g.name, Members: g.memberCount})));
     guildData;
-    bot.user.setActivity('In development mode!');
+    bot.user.setActivity('Updating Code!');
     db;
 })
 

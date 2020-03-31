@@ -1,14 +1,14 @@
 'use strict'
 const Discord = require('discord.js');
 const preRoles = require('../Data/general.json');
-const { color } = require('../Data/general.json');
+const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'softban',
     description: 'Command to softban users from the Guild. It bans then unbans them, therefore deleting any content they have posted',
     guildOnly: true,
 	run(bot, message, args) {
         // Get the logs Channel
-        const modLogs = message.guild.channels.find(ch => ch.name === 'modlogs');
+        const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');
 
         // Define User
         const user = message.author;
@@ -17,55 +17,39 @@ module.exports = {
         const offender = message.mentions.members.first();
         
         // Guild roles
-        const guildRoles = message.member.roles.map(r => r.name);
+        const guildRoles = message.member.roles.cache.map(r => r.name);
+
+        // Define args for reason
+        const reason = args.slice(1).join(' ');
         
         // Check to see if user has staff role
         if(!guildRoles.some(name => preRoles.roleName.includes(name.toLowerCase()))){
             return message.channel.send('This command is only for staff!');
         }
 
-        // Define log embeds
-        const banMsg = new Discord.RichEmbed()
-            .setColor(color.Alert)
-            .setTitle('===  Member SoftBan  ===')
-            .addField('__Author:__', `${user}`, true)
-            .addField('__Channel:__', `${message.channel.name}`, true)
-            .addBlankField()
-            .addField('__Offender:__', `${offender} has been soft-banned!`)
-            .setThumbnail(message.author.displayAvatarURL)
-            .setTimestamp()
-            .setFooter(`${message.guild} ` + `©️`);
+        // Generate embed
+		const embedGen = new embGen();
+        const softMsg = embedGen.generatesoftBanEmb(user, message, offender, reason);
+        const deniedSoft = embedGen.generatesoftDenyEmb(user, message, offender);
 
-        // Define log embeds
-        const deniedSoft = new Discord.RichEmbed()
-            .setColor(color.Warning)
-            .setTitle('===  Denied SoftBan  ===')
-            .addField('__Author:__', `${user}`, true)
-            .addField('__Channel:__', `${message.channel.name}`, true)
-            .addBlankField()
-            .addField('__Reason:__', `${user} Was unable to softban ${offender} due to permissions!`)
-            .setThumbnail(message.author.displayAvatarURL)
-            .setTimestamp()
-            .setFooter(`${message.guild} ` + `©️`);
-
-        // Rolecheck to ensure those with lower roles cannot be softbanned
-        if(message.member.highestRole.comparePositionTo(offender.highestRole) > 0){
-            // Check if the offender has been tagged
-            if(!args){
-                return message.reply('You need to tag the offender!');
-            } // If offender has been tagged, ask to confirm
-            else if(args[0]){
-                // const reason = args.slice(0).join(' ');
+        // Check if the offender has been tagged
+        if(!offender){
+            message.reply('You need to tag the offender!');
+        } // Rolecheck to ensure those with lower roles cannot be softbanned    
+        else if(message.member.roles.highest.comparePositionTo(offender.roles.highest) > 0){
+            if(reason.length === 0){
+                message.reply("Please give a reason to softban the user! `/softban (user) (reason)`");
+            }else{ // If offender has been tagged, ask to confirm
                 const filter = m => m.content.includes('yes') && m.author.id === message.author.id;
-                message.reply('Are you sure you want to softban ' + offender).then(() => {
+                message.reply('Are you sure you want to softban ' + offender.user.username).then(() => {
                     message.channel.awaitMessages(filter, {max: 1, time: 5000, errors: ['time']})
                     .then(collected => {
                             // If confirmed softban
                             offender.ban();
-                            modLogs.send(banMsg).catch(console.error);
-                            message.guild.unban(offender.id).catch(console.error)
+                            modLogs.send(softMsg).catch(console.error);
+                            message.guild.members.unban(offender.id).catch(console.error)
                     }).catch(collected => {
-                        message.reply("You didn't softban " + offender)
+                        message.reply("You didn't softban " + offender.user.username)
                     });
                 })
             }

@@ -1,6 +1,6 @@
 'use strict'
 const Discord = require('discord.js');
-const { color } = require('../Data/general.json');
+const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
     name: 'ping',
 	// Timer to avoid Spam, Useful with API's
@@ -14,35 +14,18 @@ module.exports = {
 			
 			// Define time periods
 			let ms = (bot.uptime / 1000);
-				const y = Math.floor(ms / 31449600).toString();
-				const y = Math.floor((ms / 31449600) % 60).toString();
 				const mo = Math.floor((ms / 2620800) % 60).toString();
 				const w = Math.floor((ms / 604800) % 60).toString();
 				const d = Math.floor((ms / 86400) % 60).toString();
 				const h = Math.floor((ms / 3600) % 60).toString();
 				const m = Math.floor((ms / 60) % 60).toString();
 				const s = Math.floor(ms % 60).toString();
-				
 
+			// Generate embed
+			const embedGen = new embGen();
+			const botDet = embedGen.generatepingEmb(ping, bot, mo, w, d, h, m, s, message);
 
-			// Define Message Embed 
-			const botDet = new Discord.RichEmbed()
-				.setColor(color.Pass)
-				.setTitle('===  Ping + Latency Details  ===')
-				.addField('__Ping:__', `${ping}ms`, true)
-				.addField('__API Ping:__', `${Math.round(bot.ping)}ms`, true)
-				.addField('\u200B', '__Details for the uptime of the bot:__')
-				.addField('__Years__', `${y.padStart(2, "0")}`, true)
-				.addField('__Months:__', `${mo.padStart(2, "0")}`, true)
-				.addField('__Weeks:__', `${w.padStart(2, "0")}`, true)
-				.addField('__Days:__', `${d.padStart(1, "0")}`, true)
-				.addField('__Hours:__', `${h.padStart(2, "0")}`, true)
-				.addField('__Minutes:__', `${m.padStart(2, "0")}`, true)
-				.addField('__Seconds:__', `${s.padStart(2, "0")}`, true)
-				.setThumbnail(message.author.displayAvatarURL)
-				.setTimestamp()
-				.setFooter(`${message.guild} ` + `©️`);
-
+			// Edit original msg and send embed
 			msg.edit(botDet);
 		});
 	},

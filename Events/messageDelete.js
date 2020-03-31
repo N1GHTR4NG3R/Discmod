@@ -1,9 +1,9 @@
 'use strict'
 const Discord = require('discord.js');
-const { color } = require('../Data/general.json');
+const embGen = require('../Classes/embedGenerator.js');
 module.exports = async (bot, message) => {
     // Get the logs Channel
-    const modLogs = message.guild.channels.find(ch => ch.name === 'modlogs');
+    const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');
 
     // Define an empty user to use later
     let user;
@@ -32,23 +32,16 @@ module.exports = async (bot, message) => {
             user = message.author.username;
         }
 
-    // Define the embed log
-    const delMsgLog = new Discord.RichEmbed()
-		.setColor(color.Alert)
-		.setTitle('===  DELETED MESSAGE  ===')
-		.addField('__Author:__', `${user}`, true)
-        .addField('__Channel:__', `${message.channel.name}`, true)
-        .addBlankField()
-		.setThumbnail(message.author.displayAvatarURL)
-		.setTimestamp()
-        .setFooter(`${message.guild} ` + `©️`);
+        // Generate embed
+        const embedGen = new embGen();
+        const delMsg = embedGen.generateMsgDel(user, message);
         
     // Send the log
     if(msg){
-        delMsgLog.addField('__Content:__ ', `${msg}`, true);
-        modLogs.send(delMsgLog).catch(console.error);
+        delMsg.addField('__Content:__ ', `${msg}`);
+        modLogs.send(delMsg).catch(console.error);
     } else{
-        delMsgLog.addField('__Content:__ ', 'Most Likely an Embed or system message \nwas deleted somewhere!', true);
-        modLogs.send(delMsgLog).catch(console.error);
+        delMsg.addField('__Content:__ ', 'Most Likely an Embed or system message \nwas deleted somewhere!');
+        modLogs.send(delMsg).catch(console.error);
     }
 }

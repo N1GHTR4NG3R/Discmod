@@ -1,14 +1,14 @@
 'use strict'
 const Discord = require('discord.js');
 const preRoles = require('../Data/general.json');
-const { color } = require('../Data/general.json');
+const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'ban',
     description: 'Command to ban users from the Guild.',
     guildOnly: true,
 	run(bot, message, args) {
         // Get the logs Channel
-        const modLogs = message.guild.channels.find(ch => ch.name === 'modlogs');
+        const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');
 
         // Define User
         const user = message.author;
@@ -17,60 +17,44 @@ module.exports = {
         const offender = message.mentions.members.first();
         
         // Guild roles
-        const guildRoles = message.member.roles.map(r => r.name);
+        const guildRoles = message.member.roles.cache.map(r => r.name);
         
         // Check to see if user has staff role
         if(!guildRoles.some(name => preRoles.roleName.includes(name.toLowerCase()))){
             return message.channel.send('This command is only for staff!');
         }
+        // Define args for reason
+        const reason = args.slice(1).join(' ');
 
-        // Define log embeds
-        const banMsg = new Discord.RichEmbed()
-            .setColor(color.Alert)
-            .setTitle('===  Member Ban  ===')
-            .addField('__Author:__', `${user}`, true)
-            .addField('__Channel:__', `${message.channel.name}`, true)
-            .addBlankField()
-            .addField('__Offender:__', `${offender} has been banned!`)
-            .setThumbnail(message.author.displayAvatarURL)
-            .setTimestamp()
-            .setFooter(`${message.guild} ` + `©️`);
+        // Generate embed
+		const embedGen = new embGen();
+        const banMsg = embedGen.generatebanEmb(user, message, offender, reason);
+        const deniedBan = embedGen.generatebanDenyEmb(user, message, offender);
 
-        // Define log embeds
-        const deniedBan = new Discord.RichEmbed()
-            .setColor(color.Warning)
-            .setTitle('===  Denied Ban  ===')
-            .addField('__Author:__', `${user}`, true)
-            .addField('__Channel:__', `${message.channel.name}`, true)
-            .addBlankField()
-            .addField('__Reason:__', `${user} Was unable to ban ${offender} due to permissions!`)
-            .setThumbnail(message.author.displayAvatarURL)
-            .setTimestamp()
-            .setFooter(`${message.guild} ` + `©️`);
-
-        // Rolecheck to ensure those with lower roles cannot be banned
-        if(message.member.highestRole.comparePositionTo(offender.highestRole) > 0){
-            // Check if the offender has been tagged
-            if(!args){
-                return message.reply('You need to tag the offender!');
-            } // If offender has been tagged, ask to confirm
-            else if(args[0]){
-                // const reason = args.slice(0).join(' ');
+        // Check if the offender has been tagged
+        if(!offender){
+            message.reply('You need to tag the offender!');
+        } // Check if the offender is bannable by the message author            
+        else if(message.member.roles.highest.comparePositionTo(offender.roles.highest) > 0 ){
+            if(reason.length === 0){
+                message.reply("Please give a reason to ban the user! `/ban (user) (reason)`");
+            }else {
+            // If offender has been tagged, ask to confirm
                 const filter = m => m.content.includes('yes') && m.author.id === message.author.id;
-                message.reply('Are you sure you want to ban ' + offender).then(() => {
-                    message.channel.awaitMessages(filter, {max: 1, time: 5000, errors: ['time']})
-                    .then(collected => {
-                            // If confirmed ban
-                            offender.ban();
-                            modLogs.send(banMsg).catch(console.error);
-                    }).catch(collected => {
-                        message.reply("You didn't ban " + offender)
-                    });
-                })
-            }
+                    message.reply('Are you sure you want to ban ' + offender.user.username).then(() => {
+                        message.channel.awaitMessages(filter, {max: 1, time: 5000, errors: ['time']})
+                        .then(collected => {
+                        // If confirmed ban
+                        offender.ban();
+                        modLogs.send(banMsg).catch(console.error);
+                        }).catch(collected => {
+                            message.reply("You didn't ban " + offender.user.username)
+                        });
+                    })
+                }
         }else {
-            message.reply("You are unable to ban this member")
-            modLogs.send(deniedBan).catch(console.error)
+        message.reply("You are unable to ban this member")
+        modLogs.send(deniedBan).catch(console.error)
         }
-	},
-};
+    }
+}

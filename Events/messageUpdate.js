@@ -1,16 +1,17 @@
 'use strict'
 const Discord = require('discord.js');
-const { color } = require('../Data/general.json');
+const embGen = require('../Classes/embedGenerator.js');
+
 module.exports = (bot, oldMessage, newMessage ) => {
 
     // Check if Bot?
     if(oldMessage.author.bot || newMessage.author.bot) return; // Probably don't need this!
 
     // Find logs Channel
-    const modLogs = oldMessage.guild.channels.find(channel => channel.name === 'modlogs');
+    const modLogs = oldMessage.guild.channels.cache.find(channel => channel.name === 'modlogs');
 
     // Create an empty user var
-    let user = '';
+    let user;
 
     // Message Variable
     if(oldMessage.content === newMessage.content) return;
@@ -28,19 +29,9 @@ module.exports = (bot, oldMessage, newMessage ) => {
             user = oldMessage.author.username;
         }
 
-    // Create message embed
-    const edEmbed = new Discord.RichEmbed()
-        .setColor(`${color.Warning}`)
-        .setTitle('=== EDITED MESSAGE ===')
-        .addField('__Author:__', `${user}`, true)
-        .addField('__Channel:__', `${oldMessage.channel.name}`, true)
-        .addBlankField()
-        .addField('__Old Message:__', `${oldMessage.content}`, true)
-        .addField('__New Message:__', `${newMessage.content}`, true)
-        .setThumbnail(newMessage.author.displayAvatarURL)
-        .setTimestamp()
-        .setFooter(`${oldMessage.guild} ` + `©️`);
+        const embedGen = new embGen();
+        const edMsg = embedGen.generateedMess(user, oldMessage, newMessage);
 
     // Send msg embed
-    modLogs.send(edEmbed).catch(console.error);
+    modLogs.send(edMsg).catch(console.error);
 }

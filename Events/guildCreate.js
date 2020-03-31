@@ -1,90 +1,102 @@
 'use strict'
-const Discord = require('discord.js');
 const con = require('../Data/dbConnect.js');
 const preRoles = require('../Data/general.json');
+const GuildInfoObj = require('../Classes/guildObj.js');
 module.exports = async (bot, guild) => {
-    // Data needed to send to DB
-    const guildID = guild.id;
-    const guildName = guild.name;
-    const guildOwnerID = guild.ownerID;
-    const guildOwner = guild.owner.user.username;
-    const memCount = guild.memberCount; // Possibly export this to keep it updated.
+    // Check Permissions
+    if(guild.me.hasPermission(['MANAGE_CHANNELS', 'MANAGE_ROLES'])){
+        console.log('Has Permissions!');
+     }
 
-    //Get check / create Roles
-        // Guild roles
-        const guildRoles = guild.roles.map(r => r.name);
-        // check roles
-        if(guildRoles.some(name => preRoles.roleName.includes(name.toLowerCase()))){
-           console.log('Match found!');
-        }else {
-           const mod = await guild.createRole({
+    // Guild roles
+    const guildRoles = guild.roles.cache.map(r => r.name);
+    // check roles
+      if(guildRoles.some(name => preRoles.roleName.includes(name.toLowerCase()))){
+        console.log('Match found!');
+      }else{
+        const mod = await guild.roles.create({
+            data: {
                 name : 'Moderator',
                 color: 'BLUE',
                 permissions: ['MANAGE_CHANNELS','EMBED_LINKS','ATTACH_FILES','VIEW_CHANNEL', 'READ_MESSAGE_HISTORY', 'SEND_MESSAGES',
                                  'MANAGE_ROLES', 'KICK_MEMBERS','BAN_MEMBERS', 'CREATE_INSTANT_INVITE', 'CHANGE_NICKNAME', 
                                  'MANAGE_NICKNAMES','MANAGE_MESSAGES', 'MENTION_EVERYONE', 'ADD_REACTIONS', 'CONNECT', 'SPEAK',
                                  'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
+               }
             })
+            mod;
+            console.log('Moderator role created');
         }
-    
+
     // Find the Mod role:
-    let modRole = guild.roles.find(r => r.name === preRoles.roleName); // Not sure if this line is needed!
-    
+    let modRole = await guild.roles.cache.find(r => r.name === 'Moderator');    
     // Check for logs channel - If not found, create it!
-    const staffArea = guild.channels.find(channel => channel.name === 'Staff Area');
-    const modLogs = guild.channels.find(channel => channel.name === 'modlogs');
+    const staffArea = guild.channels.cache.find(channel => channel.name === 'Staff Area');
     if(!staffArea){
        try {
-           guild.createChannel('Staff Area', {
-               type: 'category',
-               topic: 'Staff Area',
+           guild.channels.create('Staff Area', {
+               type : 'category',
+               topic : 'Staff Area',
                permissionOverwrites : [{
                 id : modRole.id,
-                allow : ['VIEW_CHANNEL', 'READ_MESSAGE_HISTORY', 'SEND_MESSAGES', 'MANAGE_MESSAGES','EMBED_LINKS', 'ATTACH_FILES'] 
+                allow : ['VIEW_CHANNEL', 'READ_MESSAGE_HISTORY', 'SEND_MESSAGES', 'MANAGE_MESSAGES','EMBED_LINKS', 'ATTACH_FILES']
                },
                {
                 id : guild.id,
                 deny : ['VIEW_CHANNEL']
-                }] 
+                }],
            })
+           console.log('Staff Area created!');
        } catch (error){
         console.log(error)
        }
-    } else {
+    }
+    const modLogs = await guild.channels.cache.find(channel => channel.name === 'modlogs');
     if(!modLogs){
         try{
-            guild.createChannel('modlogs', {
+            guild.channels.create('modlogs', {
                 type: 'text',
                 topic: 'Logs Channel'
             }).then(async channel => {
-             let staff = guild.channels.find(c => c.name == "Staff Area" && c.type == "category");
+             let staff = guild.channels.cache.find(c => c.name == "Staff Area" && c.type == "category");
              if (!staff){
                  console.log("Staff Area not found!");
-             }else {
-                 await channel.setParent(staff.id),
-                 await channel.lockPermissions()
-                 console.log("Staff area built and roles assigned");
-             }})
+             }
+             await channel.setParent(staff.id).then(x => {console.log("Parent Set!") 
+             x.lockPermissions() }).catch(err => {console.log("An error Occurred.")})
+             console.log("Staff area built and roles assigned");
+             })
          }
         catch (error){
             console.log(error)
         }
-     }
     }
 
-    // Insert Info to DB
-    const guildInfo = `INSERT INTO Guilds (guild_id, guild_member_count, guild_name, guild_owner, guild_ownerid)
-                         VALUES ('${guildID}', '${memCount}', '${guildName}', '${guildOwner}', '${guildOwnerID}')`;
-    con.query(guildInfo, function (err, result){
+    // Get Guild Information
+    const GuildInfo = GuildInfoObj(bot, guild);
+
+    // Check guildInfo isn't duplicated
+    let checkID = GuildInfo.guildID;
+    let search = 'SELECT guild_id FROM Guilds WHERE guild_id = ?';
+    con.query(search, checkID, (err, result) => {
         if (err) throw err;
-        console.log(`Inserted Guild Details for ${guildName}`);
-    })
+        if (result.length === 0){
+            // Insert Info to DB
+            let addGuild = { guild_id: GuildInfo.guildID, guild_member_count: GuildInfo.guildCount, guild_name: GuildInfo.guildName, 
+                guild_owner: GuildInfo.guildOwnerName, guild_ownerid: GuildInfo.guildOwnerID }
+            let sql = 'Insert INTO Guilds Set ?';
+            con.query(sql, addGuild, (err, result) => {
+                if (err) throw err
+                    console.log(`Inserted Guild Details for ${GuildInfo.guildName}`)
+                })
+            }else {
+            console.log("Guild already in Database!");
+            }
+        })
     
-    let guildData = console.table(bot.guilds.map((g) => ({ ID: g.id, Name: g.name})));
+    // Output Guild data to console in a table.
+    let guildData = console.table(bot.guilds.cache.map((g) => ({ ID: g.id, Name: g.name, Members: g.memberCount})));
     guildData;
-    // Check Permissions
-    if(guild.me.hasPermission(['MANAGE_CHANNELS', 'MANAGE_ROLES'])){
-       console.log('Has Permissions!');
-    }
+
     console.log('Contender connected too a new guild:');
 }

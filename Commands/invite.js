@@ -1,13 +1,13 @@
 'use strict'
 const Discord = require('discord.js');
-const { color } = require('../Data/general.json');
+const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'invite',
 	description: 'Create an invite and the bot will DM it to you.',
 	guildOnly: true,
 	run(bot, message, args) {
         // Get the logs Channel
-        const modLogs = message.guild.channels.find(ch => ch.name === 'modlogs');
+        const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');
 
         // Define User
         const user = message.author;
@@ -28,22 +28,15 @@ module.exports = {
             maxUses : 10,
             unique: true
             }).then(
-                invite => {// Define invite message
-                const inviteMsg = new Discord.RichEmbed()
-                    .setColor(color.Cool)
-                    .setTitle('===  Temp invite created  ===')
-                    .addField('__Created for:__', `${user}`, true)
-                    .addField('__Channel:__', `${message.channel.name}`, true)
-                    .addField('__Reason:__', `${reason}`)
-                    .addField('__Invite Code:__', `${dUrl}${invite.code}`)
-                    .addField('__Valid for__',' 24hrs ' )
-                    .setThumbnail(message.author.displayAvatarURL)
-                    .setTimestamp()
-                    .setFooter(`${message.guild} ` + `©️`);            
+                invite => {
+                // Generate embed
+                const embedGen = new embGen();
+                const invMsg = embedGen.generatetempInvEmb(user, message, reason, dUrl, invite);
+
                 // Output to modLogs
-                modLogs.send(inviteMsg).catch(console.error)
+                modLogs.send(invMsg).catch(console.error)
                 // Send directly to user in DM
-                message.author.send(inviteMsg);
+                message.author.send(invMsg);
             }
         ).catch(console.error)
         }

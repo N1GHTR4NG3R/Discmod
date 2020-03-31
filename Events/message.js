@@ -7,9 +7,6 @@ module.exports = (bot, message, guild) => {
 
     // Check the Prefix, Ignore if User is a bot!
     if(!message.content.startsWith(prefix) || message.author.bot) return;
-
-    // Check for logs Channel
-    const logsChan = message.guild.channels.find(channel => channel.name === `${modChannels}`); // May need to loop this, with added channel names?
     
     // Remove prefix and put commands into lowercase for ease
     const args = message.content.slice(prefix.length).split(/ +/);
