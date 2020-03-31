@@ -40,7 +40,7 @@ I use [mySql Workbench](https://www.mysql.com/products/workbench/) to build the 
 
 Then you will need to create a script called `dbConnect.js` and input your connection details and save it in the folder called Data.
 An example connection script:
-`
+```
 const mysql = require('mysql');
 const con = mysql.createConnection({
   host: 'localhost',
@@ -58,16 +58,16 @@ con.connect((err) => {
 });
 
 module.exports = con;
-`
+```
 You will then want to create a file called config.json and save that in the main folder. In this file will be held the details for your bot, which you don't want to share, here is what it looks like:
-`
+```
 {
     "token" : "<Your bot token>",
     "prefix" : "<your prefix>",
     "modChannels" : "modlogs",
     "botID" : "<your bots ID>"
 }
-`
+```
 Save the file and close it.
 
 Now, all you should need to do is initiate the bot with `node index.js` in your terminal.
