@@ -28,14 +28,14 @@ Bot warning - If another bot joins the discord, It will output a warning log to 
 ### Database Interactivity 
 The bot is connected to a database to log information about guilds and members. The information it logs is as follows:
 
-####Guilds: 
+###Guilds: 
     * guild id
     * guild name
     * guild owner
     * guild owner id
     * guild member count
     * guild prefix
-####Members:
+###Members:
     * member id
     * member name (The discord name you use)
     * member discriminator (the number after your username i.e Nightranger#8080)
