@@ -1,73 +1,70 @@
-# Code is invalid with recent v12.1.1 Discord.js update, currently working through it
-To get more information or for assistance, follow the progress join the discord at: https://discord.gg/pP4mVy3
+Thanks for looking at Contender Bot.
 
-# Contender
- Discord Moderation Bot and multi-purpose gaming bot
+The general use case of this bot currently is to moderate your discord server.
 
-Thanks for looking at my repository
+The current events are:
+guildCreate - The actions to take when joining a guild, primarilly checking for a staff area and a "modlogs" channel, 
+then creating if they aren't there and assigning the relevant roles on creation, inputting the guild information onto the DB.
 
-The general use case of this bot is to moderate your discord server. So far the usage spans these events.
+guildDelete - The actions to take when leaving a guild, primarilly removing the guild information from the DB.
 
-# Joining a guild 
-When the bot joins your server, It will check for a staff area category with a channel called modlogs, If you have
-a staff area, but no modlogs channel it will create it, and if you don't have a staff area, It will also create that. It then checks
-for a moderation role that is pre-defined within the general.json file, If no match id found, It will create the role "Moderator" and
-assign basic permissions needed for a moderator, It then ties this role to the staff area category, which in turn, the modlogs channel
-is locked to the same permissions as the staff area. No input is needed from the user, other than inviting the bot. At this point the bot will add the GuildID, GuildName, GuildMemberCOunt, GuildOwner and GuildOwnerID to the database. It also has guildPrefix here, for a webapp to be built later on to change this, and a few other features.
+guildMemberAdd - The actions to take when a member joins a guild, primarilly outputting a log into modlogs, and updating the DB with
+the members information for the relevant guild.
 
-# Member Join / leave logs 
-The bot will log when a member joins or leaves the guild, outputting their username, avatar and date/time they left, This can
-be useful in helping to track down when your server just got raided by bots, or if someone you like has decided to leave for
-whatever reason.
+guildMemberRemove - The actions taken when a member leaves a guild, primarilly outputting a log into modlogs, and removing the member
+details from the DB.
 
-# Edited messages 
-The bot will log old and new messages when someone edits a message, This is useful if someone has been harrassing, trolling
-or generally inflaming other community members and decides to edit their message in an attempt to cover it up to avoid 
-repurcusions from guild staff.
+message - The message event handler to differentiate between bot commands and actual messages, so the bot doesn't continuosly respond to
+everyone, and ensuring that replies from other bots are ignored.
 
-# Deleted Messages 
-Will log the deleted message and/or attachment URL. Note: If an attachment is deleted, It outputs a URL that leads to Discords Databse, which will error with permission denied. I have chosen not to save these to a database for a multitude of reasons.
+messageDelete - The actions to take when a message is deleted, primarilly grabbing the deleted message and outputting it into the moderation 
+channel, the purpose of this is for guild staff / mods be able to identify any harrassment claims that may happen and take action.
 
-# Voice Join / Leave logs 
-Will log when a user joins or leaves a voice channel, stating the user and the voice channel joined.
+messageUpdate - The actions to take when a message is edited, primarilly grabbing the edited message and outputting it into the moderation 
+channel, with the exception of the before / after messages being shown. The purpose of this is for guild staff / mods be able to identify 
+any harrassment claims that may happen and take action.
 
-# Bot warning 
-If another bot joins the discord, It will output a warning log to notify staff, If staff have invited it, can ignore it,
-Unfortunately selfBots can't be detected this way, so normal "Human" detection is required for selfbots.
+voiceStateUpdate - The actions to take when a voice channel is entered left, currently outputs a member join / leave into the modlogs, In 
+future updates it will allow a way to keep track of who is most active within the voice channels, to complement guildstats.
 
-# Database Interactivity 
-Currently logs guildID, guildName, owner, ownerID, memberCount and prefix (Prefix isn't used yet)...
-This will get updated as more functionality is used.
 
-# Kick/ Ban Log
-Outputs a log if a member is kicked or banned using the bot, It is hit and miss to get this from the audit logs, so for better persistence, use the bot to log it.
+Bot warning - If another bot joins the discord, It will output a warning log to notify staff, If staff have invited it, you can ignore it,
+Unfortunately selfBots can't be detected this way, so normal "Human" detection rates have to be applied, although I will be working on a way 
+to hopefully keep self-bots out.
 
-# Kick / SoftBan / Ban
-Have the option to kick, softban and ban members - Softban is where you ban and then immediatly unban them, which automatically deletes
-the last 24hrs of messages from the user, on your guild.
+Database Interactivity - The bot is connected to a database to log information about guilds and members. The information it logs is as follows:
 
-# Future Plans
-These are the following things I plan to implement:
- -- Make some commands guild only
- -- Log when a member creates an invite code == Partial
- -- Log when a channel is created / edited
- -- Assign roles through emojis
- -- Message deletion / purge (max 100 messages)
- -- Donation acceptance
- -- Import Social feed data (Twitch, Instagram etc)
- -- Import data from other sites (News feeds etc)
- -- Welcome message, stating rules and ToS
- -- Link and Discord Invite detection, maybe separate them
-      (whitelist/blacklist)
- -- Allow a user to temporarily bypass moderation rules
-      (Useful for stream links)
- -- Ability to warn with a command 
-    Tally warnings and after 3 warnings will kick/ban
-    (SoftBan on first offense)
- -- Apply roles through reactions
+Guilds: 
+    guild id
+    guild name
+    guild owner
+    guild owner id
+    guild member count
+    guild prefix
+Members:
+    member id
+    member name (The discord name you use)
+    member discriminator (the number after your username i.e Nightranger#8080)
+    guild id (to associate the member with the relevant guild)
+    member chat points (For future updates to reward the most active chat members)
+    member warn points (For future updates to introduce a warning system)
 
-# Of course, I have more plans than this, but this should keep me going for now.
-feel free to contribute, make suggestions and/or use the bot, but make sure to link to this repo and credit me.
+Current Bot commands are as follows:
 
-Thanks for your time!.
+kick - To kick a member from your guild
+softban - To ban a user from your guild, then unban them immediately after to remove the chat history 
+ban - To ban a member from your guild
+guildinfo - To display current information about your guild
+invite - to create a temporary invite with a limited time period and limited uses
+perminvite - to create a permanent invite
+ping - to display the members ping to the bot, the bots ping to the API, and the current uptime for the bot
+reload - Bot developers only to reload commands after updating them, to minimise bot downtime.
 
+Note: The invite commands will DM the user the invite and output it to the modlogs channel for tracking purposes (To help identify where selfbots are coming from).
+It would be good practise to disallow users to create invites via the traditional way, and allow the bot to create them.
+
+Additional Note: The invites and kick, softban, ban commands all require reasons before they are processed, this can help ensure that guild owners know why people are
+creating invites or being punished by moderators+.
+
+Currently no additional or personal identifiable information is being held, and I do not plan on adding any information that can personally identify anyone, additional 
+information may be needed in the future for future command implementations etc, so be sure to check this repository to keep up to date.
