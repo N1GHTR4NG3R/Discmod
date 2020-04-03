@@ -270,5 +270,31 @@ class embGen {
             .setFooter(`©️ ` + `Contender Bot 2020`);
             return giEmbed
         }
+
+        // Help embed
+        generatehelpEmb(message) {       
+            // Create Embed
+            const helpMsg = new Discord.MessageEmbed()
+                .setColor(`${color.Cool}`)
+                .setTitle('===   Help   ===')
+                .setDescription('Thanks for using Contender Bot!')
+                .setThumbnail(message.author.displayAvatarURL())
+                .setTimestamp()
+                .setFooter(`©️ ` + `Contender Bot 2020`);
+            return helpMsg
+        }
+
+        // Help cmd embed
+        generatecmdEmb(message) {       
+            // Create Embed
+            const cmdMsg = new Discord.MessageEmbed()
+                .setColor(`${color.Cool}`)
+                .setTitle('===   Commands   ===')
+                .setDescription('Message embed to outline commands and usages')
+                .setThumbnail(message.author.displayAvatarURL())
+                .setTimestamp()
+                .setFooter(`©️ ` + `Contender Bot 2020`);
+            return cmdMsg
+        }
 }
 module.exports = embGen;

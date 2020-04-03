@@ -38,7 +38,7 @@ bot.on('ready', async () => {
     console.log('Contender is connected too:');
     let guildData = console.table(bot.guilds.cache.map((g) => ({ ID: g.id, Name: g.name, Members: g.memberCount})));
     guildData;
-    bot.user.setActivity('Updating Code!');
+    bot.user.setActivity('https://discord.gg/Tz3mRyJ');
     db;
 })
 

@@ -5,7 +5,9 @@ const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'kick',
 	description: 'Command to kick users from the Guild.',
-	guildOnly: true,
+    guildOnly: true,
+    usage: '/kick',
+    access: 'Moderators+',
 	run(bot, message, args) {
         // Get the logs Channel
         const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');

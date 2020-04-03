@@ -3,7 +3,9 @@ const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
     name: 'guildinfo',
-	description: 'Command to get guild information.',
+    description: 'Command to get guild information.',
+    usage: '/guildinfo',
+    access: 'Members',
 	guildOnly: true,
 	run(bot, message, args) {
         const guildID = message.guild.id;

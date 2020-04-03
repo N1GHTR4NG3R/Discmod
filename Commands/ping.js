@@ -6,6 +6,8 @@ module.exports = {
 	// Timer to avoid Spam, Useful with API's
 	cooldown : 5,
 	description : "Outputs the bot's ping data and uptime",
+	usage: '/ping',
+	access: 'Members',
 	run(bot, message) {
 		message.channel.send('Pinging...').then(msg => {
 			

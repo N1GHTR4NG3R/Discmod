@@ -3,7 +3,9 @@ const fs = require('fs');
 module.exports = {
     name: 'reload',
 	cooldown : 5,
-	description : "Reloads a command file to avoid taking the bot down",
+    description : "Reloads a command file to avoid taking the bot down",
+    usage: '/reload',
+    access: 'Developers',
 	run(bot, message, args) {
         
         // Command check

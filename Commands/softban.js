@@ -4,8 +4,10 @@ const preRoles = require('../Data/general.json');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'softban',
-    description: 'Command to softban users from the Guild. It bans then unbans them, therefore deleting any content they have posted',
+    description: 'Softban users from the Guild. It bans then unbans them,\n therefore deleting any content they may have posted',
     guildOnly: true,
+    usage: '/softban',
+    access: 'Moderators+',
 	run(bot, message, args) {
         // Get the logs Channel
         const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');

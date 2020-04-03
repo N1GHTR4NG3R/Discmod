@@ -5,6 +5,8 @@ const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'ban',
     description: 'Command to ban users from the Guild.',
+    usage: '/ban',
+    access: 'Moderators+',
     guildOnly: true,
 	run(bot, message, args) {
         // Get the logs Channel

@@ -3,8 +3,10 @@ const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'perminvite',
-	description: 'Create an invite and the bot will DM it to you.',
-	guildOnly: true,
+	description: 'Create a permanent invite and the bot will DM it to you.',
+    guildOnly: true,
+    usage: '/perminvite',
+    access: 'Members',
 	run(bot, message, args) {
         // Get the logs Channel
         const modLogs = message.guild.channels.cache.find(ch => ch.name === 'modlogs');

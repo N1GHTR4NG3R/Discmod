@@ -3,7 +3,9 @@ const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
 	name: 'invite',
-	description: 'Create an invite and the bot will DM it to you.',
+    description: 'Create a temporary invite and the bot will DM it to you.',
+    usage : '/invite',
+    access : 'Members',
 	guildOnly: true,
 	run(bot, message, args) {
         // Get the logs Channel
