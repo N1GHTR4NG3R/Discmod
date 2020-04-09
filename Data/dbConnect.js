@@ -5,7 +5,7 @@ let dbConfig = {
   port: '******',
   user: '******',
   password: '******',
-  database: '******',
+  database: '*******',
 };
 
 //Create Connection
