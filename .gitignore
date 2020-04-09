@@ -10,7 +10,7 @@ package.json
 # Ignore some files from Data
 Data/bugs.txt
 Data/direction.txt
-Data/dbConnect.js
+
 
 #Ignore VS files
 .vs

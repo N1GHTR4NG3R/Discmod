@@ -1,11 +1,11 @@
 const mysql = require('mysql');
 
 let dbConfig = {
-  host: '*****', // Change to localhost for server
-  port: '*****', // Port for DB
-  user: '*****', // DB USER
-  password: '*****', // DB PASSWORD
-  database: '*****', // DB
+  host: '******', // Change to localhost for server
+  port: '******',
+  user: '******',
+  password: '******',
+  database: '******',
 };
 
 //Create Connection
