@@ -3,7 +3,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const { prefix, token } = require('./config.json');
-const db = require('./Data/dbConnect.js');
+let con = require('./Data/dbConnect.js');
 
 // Define the bot
 const bot = new Discord.Client();
@@ -36,10 +36,24 @@ fs.readdir('./Events/', (err, files) => {
 // activation to get the bot to work
 bot.on('ready', async () => {
     console.log('Contender is connected too:');
-    let guildData = console.table(bot.guilds.cache.map((g) => ({ ID: g.id, Name: g.name, Members: g.memberCount})));
-    guildData;
+    let guildDB = bot.guilds.cache.forEach((g) => {
+        let gSql = 'INSERT IGNORE INTO Guilds Set ?';
+        let guildInfo = {
+            guild_id: g.id,
+            guild_name: g.name,
+            guild_owner: g.owner.user.username,
+            guild_owner_id: g.ownerID,
+            guild_member_count: g.memberCount
+        }
+        con.query(gSql, guildInfo, (err, result) => {
+            if (err) {throw err};
+            console.log(`Updated Guild Tables!`);
+        })
+    })
+    guildDB;
+    let guildData = bot.guilds.cache.map((g) => ({ ID: g.id, Name: g.name, Members: g.memberCount}));
+    console.table(guildData);
     bot.user.setActivity('https://discord.gg/Tz3mRyJ');
-    db;
 })
 
 // log-in

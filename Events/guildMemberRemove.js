@@ -1,6 +1,6 @@
 'use strict'
 const Discord = require('discord.js');
-const con = require('../Data/dbConnect.js');
+let con = require('../Data/dbConnect.js');
 const { botID } = require('../config.json');
 const embGen = require('../Classes/embedGenerator.js');
 const MemberInfoMethod = require('../Classes/memberObj.js');
@@ -19,13 +19,14 @@ module.exports = async (bot, member) => {
               if (err) throw err;
               console.log(`Updated member Count for ${MemberInfo.userGuildName}`);
             })
-    
+
     // Update Member Information
-    const updMem = MemberInfo.userID
-    let memSql = 'DELETE FROM Members Where member_id = ?'
-    con.query(memSql, updMem, (err, result) => {
-        if (err) throw err;
-        console.log(`Deleted Member from ${MemberInfo.userGuildName} DB!`);
+    const updMemID = MemberInfo.userID;
+    const remguiMemID = MemberInfo.userGuildID;
+    let memSql = 'DELETE FROM Guildmembers Where guild_id = ? And member_id = ?'
+    con.query(memSql, [remguiMemID, updMemID], (err, result) => {
+        if (err) {throw err;}
+        console.log(`Deleted Member from ${MemberInfo.userGuildName} Guildmembers!`);
     })
 
     const embedGen = new embGen();

@@ -1,5 +1,5 @@
 'use strict'
-const con = require('../Data/dbConnect.js');
+let con = require('../Data/dbConnect.js');
 const preRoles = require('../Data/general.json');
 const GuildInfoObj = require('../Classes/guildObj.js');
 module.exports = async (bot, guild) => {
@@ -62,7 +62,7 @@ module.exports = async (bot, guild) => {
              if (!staff){
                  console.log("Staff Area not found!");
              }
-             await channel.setParent(staff.id).then(x => {console.log("Parent Set!") 
+             await channel.setParent(staff.id).then(x => {console.log("Parent Set!")
              x.lockPermissions() }).catch(err => {console.log("An error Occurred.")})
              console.log("Staff area built and roles assigned");
              })
@@ -77,23 +77,24 @@ module.exports = async (bot, guild) => {
 
     // Check guildInfo isn't duplicated
     let checkID = GuildInfo.guildID;
+    const gidNum = BigInt(checkID); // Convert ID from String to Number!.
     let search = 'SELECT guild_id FROM Guilds WHERE guild_id = ?';
     con.query(search, checkID, (err, result) => {
         if (err) throw err;
         if (result.length === 0){
             // Insert Info to DB
-            let addGuild = { guild_id: GuildInfo.guildID, guild_member_count: GuildInfo.guildCount, guild_name: GuildInfo.guildName, 
-                guild_owner: GuildInfo.guildOwnerName, guild_ownerid: GuildInfo.guildOwnerID }
+            let addGuild = { guild_id: gidNum, guild_name: GuildInfo.guildName, guild_owner: GuildInfo.guildOwnerName, 
+                guild_owner_id: GuildInfo.guildOwnerID, guild_member_count: GuildInfo.guildCount }
             let sql = 'Insert INTO Guilds Set ?';
             con.query(sql, addGuild, (err, result) => {
                 if (err) throw err
-                    console.log(`Inserted Guild Details for ${GuildInfo.guildName}`)
+                    console.log(`Added Guild Details for ${GuildInfo.guildName}`)
                 })
             }else {
             console.log("Guild already in Database!");
             }
-        })
-    
+    })
+
     // Output Guild data to console in a table.
     let guildData = console.table(bot.guilds.cache.map((g) => ({ ID: g.id, Name: g.name, Members: g.memberCount})));
     guildData;
