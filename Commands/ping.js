@@ -27,8 +27,9 @@ module.exports = {
 			const embedGen = new embGen();
 			const botDet = embedGen.generatepingEmb(ping, bot, mo, w, d, h, m, s, message);
 
-			// Edit original msg and send embed
-			msg.edit(botDet);
+			// Selete original msg and send embed
+			msg.delete();
+			msg.channel.send(botDet);
 		});
 	},
 }

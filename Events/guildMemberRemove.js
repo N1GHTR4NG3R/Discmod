@@ -17,7 +17,7 @@ module.exports = async (bot, member) => {
     let sql =  `UPDATE Guilds SET guild_member_count = ? WHERE guild_id = ?`;
     con.query(sql, updGuildMem, function (err, result){
               if (err) throw err;
-              console.log(`Updated member Count for ${MemberInfo.userGuildName}`);
+              console.log(`Removed a member from ${MemberInfo.userGuildName}`);
             })
 
     // Update Member Information

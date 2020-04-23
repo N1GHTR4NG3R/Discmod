@@ -44,7 +44,11 @@ module.exports = {
             }else{
                 // If offender has been tagged, ask to confirm
                 const filter = m => m.content.includes('yes') && m.author.id === message.author.id;
-                message.reply('Are you sure you want to kick ' + offender.user.username).then(() => {
+                message.reply('Are you sure you want to kick ' + offender.user.username).then((message) => {
+                    const msgDel = setTimeout(() => {
+                        message.delete()
+                    }, 3000);
+                    msgDel;
                     message.channel.awaitMessages(filter, {max: 1, time: 5000, errors: ['time']})
                     .then(collected => {
                         // If confirmed Kick
