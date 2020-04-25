@@ -1,5 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 
 module.exports = (bot, oldMessage, newMessage ) => {
@@ -12,6 +11,9 @@ module.exports = (bot, oldMessage, newMessage ) => {
 
     // Create an empty user var
     let user;
+
+    // Define entry for later
+    let entry;
 
     // Message Variable
     if(oldMessage.content === newMessage.content) return;

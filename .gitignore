@@ -1,16 +1,11 @@
-# Ignore node_modules folder
+# Ignored node_modules folder
 node_modules/
 
-#Ignore config files
+#Ignored config files
 config.json
 
-# Ignore Package files
+# Ignored Package files
 package.json
-
-# Ignore some files from Data
-Data/bugs.txt
-Data/direction.txt
-Data/dbConnect.js
 
 #Ignore VS files
 .vs
@@ -18,5 +13,4 @@ Data/dbConnect.js
 
 #Ignore Readme.txt
 README.txt
-Data/dbConnect.js
-Data/dbConnect.js
+Data/dbConnection.js

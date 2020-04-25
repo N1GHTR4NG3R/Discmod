@@ -1,5 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
 module.exports = (bot, member) => {
     /**
     * @description Definitions for ease of use in accessing the member object and info

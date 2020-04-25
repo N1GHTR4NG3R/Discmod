@@ -1,5 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
     name: 'ping',

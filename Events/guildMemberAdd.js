@@ -1,6 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
-let con = require('../Data/dbConnect.js');
 const embGen = require('../Classes/embedGenerator.js');
 const MemberInfoObj = require('../Classes/memberObj.js');
 module.exports = async (bot, member) => {
@@ -12,33 +10,30 @@ module.exports = async (bot, member) => {
     const MemberInfo = MemberInfoObj(bot, member);
 
     // Update Guild Information
-    let memGuildId = MemberInfo.userGuildID;
-    const memGuildID = BigInt(memGuildId); // Convert ID from String to Number!.
-    const updGuildMem = [ MemberInfo.userGuildCount, memGuildID ]
+    const updGuildMem = [ MemberInfo.userGuildCount, MemberInfo.userGuildID ]
     let sql = 'UPDATE Guilds SET guild_member_count = ? WHERE guild_id = ?';
-    con.query(sql, updGuildMem, function (err, result){
-              if (err) {throw err};
+    bot.con.query(sql, updGuildMem, function (err, result){
+        if (err) {console.error(err, "There was an error Updating the guild in the DB!")}
               console.log(`Updated Member Count for ${MemberInfo.userGuildName}`);
+              return result;
             })
     
     // Update Member Information
-    let memID = MemberInfo.userID;
-    const memIdNo = BigInt(memID); // Convert ID from String to Number!.
-    const updMem = { member_id : memIdNo, member_name : MemberInfo.userName, member_disc : MemberInfo.userDisc }
+    const updMem = { member_id : MemberInfo.userID, member_name : MemberInfo.userName, member_disc : MemberInfo.userDisc }
     let memSql = 'INSERT IGNORE INTO Members Set ?';
-    con.query(memSql, updMem, (err, result) => {
-        if (err) {throw err};
+    bot.con.query(memSql, updMem, (err, result) => {
+        if (err) {console.error(err, "There was an error Inserting the member into Members!")}
         console.log(`Updated Member Table for ${MemberInfo.userName}`);
+        return result;
     })
 
     // Update GuildMembers Table
-    let guiID = MemberInfo.userGuildID;
-    const memGuiID = BigInt(guiID); // Convert String to Number
-    const updGMT = {guild_id: memGuiID, member_id: memIdNo };
+    const updGMT = {guild_id: MemberInfo.userGuildID, member_id: MemberInfo.userID };
     let guiMemSQL = 'INSERT INTO Guildmembers SET ?';
-    con.query(guiMemSQL, updGMT, (err, result) => {
-        if(err){ throw err }
+    bot.con.query(guiMemSQL, updGMT, (err, result) => {
+        if (err) {console.error(err, "There was an error Inserting the member into GuildMembers!")}
         console.log(`Updated GuildMembers Table`);
+        return result;
     })
 
     // Call the embed generator

@@ -1,6 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
-let con = require('../Data/dbConnect.js');
 const { botID } = require('../config.json');
 const embGen = require('../Classes/embedGenerator.js');
 const MemberInfoMethod = require('../Classes/memberObj.js');
@@ -15,18 +13,19 @@ module.exports = async (bot, member) => {
     // Update Guild Information.
     const updGuildMem = [ MemberInfo.userGuildCount, MemberInfo.userGuildID ]
     let sql =  `UPDATE Guilds SET guild_member_count = ? WHERE guild_id = ?`;
-    con.query(sql, updGuildMem, function (err, result){
-              if (err) throw err;
+    bot.con.query(sql, updGuildMem, function (err, result){
+        if (err) {console.error(err, "There was an error Updating the guild in the DB!")}
               console.log(`Removed a member from ${MemberInfo.userGuildName}`);
+              return result;
             })
 
     // Update Member Information
-    const updMemID = MemberInfo.userID;
-    const remguiMemID = MemberInfo.userGuildID;
+    const updMem = [MemberInfo.userGuildID, MemberInfo.userID]
     let memSql = 'DELETE FROM Guildmembers Where guild_id = ? And member_id = ?'
-    con.query(memSql, [remguiMemID, updMemID], (err, result) => {
-        if (err) {throw err;}
+    bot.con.query(memSql, updMem, (err, result) => {
+        if (err) {console.error(err, "There was an error Updating the member in Members!")}
         console.log(`Deleted Member from ${MemberInfo.userGuildName} Guildmembers!`);
+        return result;
     })
 
     const embedGen = new embGen();

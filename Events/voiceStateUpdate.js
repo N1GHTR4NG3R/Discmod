@@ -1,5 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = async (bot, oldState, newState) => {
     // Define the new user

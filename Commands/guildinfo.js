@@ -1,5 +1,4 @@
 'use strict'
-const Discord = require('discord.js');
 const embGen = require('../Classes/embedGenerator.js');
 module.exports = {
     name: 'guildinfo',
@@ -7,7 +6,7 @@ module.exports = {
     usage: '/guildinfo',
     access: 'Members',
 	guildOnly: true,
-	run(bot, message, args) {
+	run(bot, message) {
         // Define user who called command        
         const user = message.author;
         // Get Guild Name
@@ -23,11 +22,11 @@ module.exports = {
         // Get number of Channels
         const guiChan = message.guild.channels.cache.filter(c => c.type === "text").size;
         
-
         // Generate Embed
         const embedGen = new embGen();
         const giEmb = embedGen.generateguildInfoEmb(user, memCount, guiName, guiID, guiOwner, guiCreate, guiChan, message);
 
+        // Send Embed
         message.channel.send(giEmb);
     }
 }

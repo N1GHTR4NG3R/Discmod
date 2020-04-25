@@ -1,7 +1,10 @@
+/* eslint-disable require-atomic-updates */
+/* eslint-disable no-async-promise-executor */
 'use strict'
 // Essentials
 const Discord = require('discord.js');
 const fs = require('fs');
+const db = require('./Data/dbConnection.js');
 const { token } = require('./config.json');
 
 // Define the bot
@@ -32,33 +35,54 @@ fs.readdir('./Events/', (err, files) => {
     });
 });
 
+// Create Bot Database Connection
+const botConnect = () => new Promise(async(resolve) => {
+    bot.con = await db.Connect();
+    bot.con.on("error", async(e) => {
+        await db.reConnect(bot.con, e);
+        botConnect();
+    })
+    return resolve();
+})
+
 // activation to get the bot to work
-bot.on('ready', () => {
-    // Get DB Connection Script
-    let con = require('./Data/dbConnect.js');
-    // Update GuildDB on Start
-    let guildDB = bot.guilds.cache.forEach((g) => {
-        let guildInfo = {
-            guild_id: g.id,
-            guild_name: g.name,
-            guild_owner: g.owner.user.username,
-            guild_owner_id: g.ownerID,
-            guild_member_count: g.memberCount,
-            guild_prefix: g.prefix
-        }
+bot.on('ready', async() => {
+    // Update GuildDB on Start up
+    await botConnect();
+    async function guildInfo() {
+        try {
+        let guildDB = bot.guilds.cache.forEach((g) => {
+            let gInfo = {
+                guild_id: g.id,
+                guild_name: g.name,
+                guild_owner: g.owner.user.username,
+                guild_owner_id: g.ownerID,
+                guild_member_count: g.memberCount,
+                guild_prefix: g.prefix
+            }
         let gSql = 'INSERT IGNORE INTO Guilds Set ?';
-        con.query(gSql, guildInfo, (err, result) => {
-            if (err) {console.error('Unable to update Guild data Table: Index.js - Line 40')};
-            return;
-        })  
-    });
-    guildDB;
-    // Get Guild Info and output as table
-    con.query("SELECT G.guild_id, G.guild_name, G.guild_owner, G.guild_owner_id, G.guild_member_count, G.guild_prefix FROM Guilds G", (err, result) => {
-        if (err) {console.error('Unable to get Guild data Table: Index.js - Line 56')};
-        console.table(result);
-        console.log('Contender is connected!');
-    });
+        bot.con.query(gSql, gInfo, (err, result) => {
+            if (err) {console.error('Unable to update Guild data Table: Index.js - Line 40')}
+                return result;
+            })  
+        });
+        guildDB;
+        // Get Guild Info and output as table
+            bot.con.query("SELECT G.guild_id, G.guild_name, G.guild_owner, G.guild_owner_id, G.guild_member_count, G.guild_prefix FROM Guilds G", (err, result) => {
+                if (err) {console.error('Unable to get Guild data Table: Index.js - Line 56')}
+                console.table(result);
+                bot.prefixes = {};
+                result.forEach(r => {
+                    bot.prefixes[r.guild_id] = r.guild_prefix
+                });
+                console.log('Contender is connected!');
+            });
+        }catch(e){
+          console.error(e, "Unable to Connect!")
+        }
+      }
+    guildInfo();
+    // Set Bot's activity
     bot.user.setActivity('https://discord.gg/Tz3mRyJ');
 })
 

@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { color } = require('../Data/general.json');
-
+/*
     // First create a timestamp for logs
     const timeStamp = new Date();
         let y = timeStamp.getFullYear();
@@ -15,6 +15,8 @@ const { color } = require('../Data/general.json');
     let time = h + ":" + m + ":" + s;
     let currTimeStamp = day + ' ' + time
 
+    Edited out for the time being...
+*/
 /**
  * @description Embed generator file to hold all embeds, to reduce clutter elsewhere keeping cleaner code.
  */
@@ -45,8 +47,6 @@ class embGen {
             .setColor(`${color.Pass}`)
             .setTitle('===   Member Joined   ===')
             .setDescription(userName + ' has just joined the server!')
-            // .addField('\u200b', '\u200b') // New Blankfield - Commented out maybe for future reference
-            .addField('__Time They Joined:__', `${currTimeStamp}`)
             .setThumbnail(`${userImg}`)
             .setTimestamp()
             .setFooter(`©️ ` + `Contender Bot 2020`);
@@ -72,7 +72,6 @@ class embGen {
             .setColor(`${color.Warning}`)
             .setTitle('===   Member Left   ===')
             .setDescription(userName + ' has just left the server!')
-            .addField('__Time They Left:__', `${currTimeStamp}`)
             .setThumbnail(`${userImg}`)
             .setTimestamp()
             .setFooter(`©️ ` + `Contender Bot 2020`);
@@ -259,13 +258,19 @@ class embGen {
         }
 
         // Define guild info embed
-        generateguildInfoEmb(user, memCount, message){
+        generateguildInfoEmb(user, memCount, guiName, guiID, guiOwner, guiCreate, guiChan, message){
         const giEmbed = new Discord.MessageEmbed()
             .setColor(color.Cool)
-            .setTitle('===  Guild Information  ===')
-            .addField('__Requested by:__', `${user}`, true)
+            .setTitle(`===  ${guiName}'s Info  ===`)
+            .addField('__Guild ID:__', `${guiID}`, true)
+            .addField('\u200b', ` \u200b`, true) // Uni-code placeholder put in to avoid killing bot before being called
+            .addField('__Guild Owner:__', `${guiOwner}`,true)
             .addField('__Member Count:__', `${memCount}`, true)
-            .setThumbnail(message.author.displayAvatarURL())
+            .addField('\u200b', ` \u200b`, true)
+            .addField('__Channel Count:__', `${guiChan}`, true)
+            .addField('__Created on:__', `${guiCreate}`)
+            .addField('__Requested by:__', `${user}`)
+            .setThumbnail(message.guild.iconURL())
             .setTimestamp()
             .setFooter(`©️ ` + `Contender Bot 2020`);
             return giEmbed

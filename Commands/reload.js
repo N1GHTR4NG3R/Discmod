@@ -1,5 +1,4 @@
 'use strict'
-const fs = require('fs');
 module.exports = {
     name: 'reload',
 	cooldown : 5,
