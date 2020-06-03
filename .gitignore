@@ -13,4 +13,12 @@ package.json
 
 #Ignore Readme.txt
 README.txt
+
+#Ignore Database Script
 Data/dbConnection.js
+
+#Ignore Custom scripts
+Data/market_sales.json
+Data/player_count.js
+Data/tradeStation.js
+Commands/lifmp.js
