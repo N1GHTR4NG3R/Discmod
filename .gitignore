@@ -18,7 +18,7 @@ README.txt
 Data/dbConnection.js
 
 #Ignore Custom scripts
+Commands/lifmp.js
 Data/market_sales.json
 Data/player_count.js
 Data/tradeStation.js
-Commands/lifmp.js
