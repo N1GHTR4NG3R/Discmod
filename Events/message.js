@@ -1,15 +1,18 @@
+/* eslint-disable complexity */
 "use strict";
 const Discord = require("discord.js");
 module.exports = (bot, message) => {
+	
 	// Check messages for discord invite links
-	if(message.member.roles.cache.some(r => 
-		r.name !== "Moderator")){ 
+	if(message.author.bot === true){
+		return
+	}else if (!message.member.roles.cache.some(r => r.name === "Moderator")){
 			if(message.content.includes('discord.gg/') || message.content.includes('discordapp.com/invite') || message.content.includes('discord.com/invite')){
 				message.delete();
-				console.log("User tried to post an Invite");
+				console.log(message.author + 'posted an Invite');
 		}
 	}
-	
+
 	// Create a cooldown collection
 	const coolDown = new Discord.Collection();
 
@@ -37,8 +40,7 @@ module.exports = (bot, message) => {
     const command 
     = bot.commands.get(commandName)
     || bot.commands.find(
-            (cmd) => 
-            cmd.aliases && cmd.aliases.includes(commandName)
+            (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
 		);
 	if (!command) return;
 	if (command.args && !args.length) {
@@ -81,8 +83,7 @@ module.exports = (bot, message) => {
 	timeStamp.set(message.author.id, current);
 
 	// Create Timeout callback if above statement does not remove authors timeStamp.
-    setTimeout(() => 
-    timeStamp.delete(message.author.id), timer);
+    setTimeout(() => timeStamp.delete(message.author.id), timer);
 	// If Command, Execute it!
 	try {
 		command.run(bot, message, args); // Arguments to export for commands!
