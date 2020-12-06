@@ -8,7 +8,9 @@ const { token } = require("./config.json");
 const cc = require("kleur");
 
 // Define the bot
-const bot = new Discord.Client();
+const bot = new Discord.Client({
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+});
 
 // Create Bot commands as collection
 bot.commands = new Discord.Collection();
@@ -39,7 +41,8 @@ fs.readdir("./Events/", (err, files) => {
 });
 
 // Create Bot Database Connection
-const botConnect = () => new Promise(async (resolve) => {
+const botConnect = () =>
+  new Promise(async (resolve) => {
     bot.con = await db.Connect();
     bot.con.on("error", async (e) => {
       await db.reConnect(bot.con, e);
@@ -48,48 +51,66 @@ const botConnect = () => new Promise(async (resolve) => {
     return resolve();
   });
 
+// Get Invites
+const invites = {};
+
 // activation to get the bot to work
 bot.on("ready", async () => {
+  // Get all invites
+  bot.guilds.cache.forEach(g => {
+    g.fetchInvites().then(guildInvites => {
+      bot.invites = invites
+      bot.invites[g.id] = guildInvites;
+    })
+  })
   // Update GuildDB on Start up
   await botConnect();
   async function guildInfo() {
     try {
-    let guildDB = bot.guilds.cache.forEach((g) => {
+      let guildDB = bot.guilds.cache.forEach((g) => {
         let gInfo = {
-            guild_id: g.id,
-            guild_name: g.name,
-            guild_owner: g.owner.user.username,
-            guild_owner_id: g.ownerID,
-            guild_member_count: g.memberCount,
-            guild_prefix: g.prefix
-        }
-    let gSql = 'INSERT IGNORE INTO Guilds Set ?';
-    bot.con.query(gSql, gInfo, (err, result) => {
-        if (err) {console.error('Unable to update Guild data Table: Index.js - Line 55')}
-            return result;
-        })  
-    });
-    guildDB;
-    // Get Guild Info and output as table
-      bot.con.query("SELECT G.guild_id, G.guild_name, G.guild_owner, G.guild_owner_id, G.guild_member_count, G.guild_prefix, G.def_channel FROM Guilds G", (err, result) => {
-        if (err) {console.error('Unable to get Guild data Table: Index.js - Line 55')}
+          guild_id: g.id,
+          guild_name: g.name,
+          guild_owner: g.owner.user.username,
+          guild_owner_id: g.ownerID,
+          guild_member_count: g.memberCount,
+          guild_prefix: g.prefix,
+        };
+        let gSql = "INSERT IGNORE INTO Guilds Set ?";
+        bot.con.query(gSql, gInfo, (err, result) => {
+          if (err) {
+            console.error(
+              "Unable to update Guild data Table: Index.js - Line 58"
+            );
+          }
+          return result;
+        });
+      });
+      guildDB;
+      // Get Guild Info and output as table
+      bot.con.query(
+        "SELECT G.guild_id, G.guild_name, G.guild_owner, G.guild_owner_id, G.guild_member_count, G.guild_prefix, G.def_channel FROM Guilds G",
+        (err, result) => {
+          if (err) {
+            console.error("Unable to get Guild data Table: Index.js - Line 79");
+          }
           console.table(result);
           bot.prefix = {};
           bot.defChan = {};
-          result.forEach(r => {
-              bot.prefix[r.guild_id] = r.guild_prefix
-              bot.defChan[r.guild_id] = r.def_channel
-        });
-          // Output to show Connected and Logged in!
-          console.log(cc.green(`${bot.user.tag} Logged In!`))
-      });
-    }catch(e){
-      console.error(e, "Unable to Connect!")
+          result.forEach((r) => {
+            bot.prefix[r.guild_id] = r.guild_prefix;
+            bot.defChan[r.guild_id] = r.def_channel;
+          });
+          // Output that the bot is connected!
+          console.log(cc.green(`${bot.user.tag} Logged In!`));
+        }
+      );
+    } catch (e) {
+      console.error(e, "Unable to Connect!");
     }
   }
   await guildInfo();
   // Set Bot's activity
-  // Set Discord invite for the bot's discord
   bot.user.setActivity("https://discord.gg/Tz3mRyJ");
 });
 
