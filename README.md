@@ -1,6 +1,6 @@
-# Thanks for looking at Contender Bot.
+# Thanks for looking at DiscMod Discord Bot.
 The general use case of this bot currently is to moderate your discord server. If you require any help please join here:
-[Contender Discord](https://discord.gg/hyFApCR)
+[Discmod Discord](https://discord.gg/hyFApCR)
 
 ## Prerequisites
 * Discord Client
