@@ -1,0 +1,46 @@
+General direction of Bot.
+=========================
+Make some commands guild only
+Log when a member creates an invite code == Partial
+Log when a channel is created / edited
+Assign roles through emojis
+Message deletion / purge (max 100 messages)
+Donation acceptance
+Import Social feed data (Twitch, Instagram etc)
+Import data from other sites (News feeds etc)
+Welcome message, stating rules and ToS
+Link and Discord Invite detection, maybe separate them
+    (Then ofc whitelist/blacklist - Both would be nice)
+Allow a user to temporarily bypass moderation rules
+                     (Quite common in Twitch bots)
+Ability to warn with a command like !w <user> <reason> 
+    - It will tally warnings and after 3 warnings will kick/ban (SoftBan on first offense)
+
+Database stuff.
+===============
+Adopt message experience and ranks
+Log member warning tally
+Make Permanent Invites stick to a member.
+
+Info todo:
+==========
+Output a welcome message to new users - Either through a DM or to a channel in the guild.
+Explaining the channel chat messages are logged when edited / deleted for moderation purposes (Help detect scammers, and Discords ToS).
+Explain Bot warnings are unable to detect selfbots, as they show as users and not bots.
+
+Completed Tasks:
+================
+Check to see when a user joins if it's a bot and send a warning log == Complete
+Log when an Embed if a user deletes a message == Complete
+Log when a user has edited a message == Complete
+Log when a user joins/leaves a voice channel == Complete
+Log when a member joins/leaves a guild == Complete
+Log when joining / Leaving guilds == Complete
+Add Guild details to database when joining == Complete
+Update member count for guilds == Complete
+Remove Guild details from database when leaving == Complete
+Log when a member is kicked == Complete
+kick users == Complete
+Ban users (soft / Hard) == Complete
+Log when a member is banned == Complete
+Command to create an Invite == Complete
